@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ЛР №8 — CBOW Word Embeddings</title><style>
+:root{font:16px/1.6 Inter,system-ui,Arial,sans-serif;color:#16283a;background:#f1f5f9}
+*{box-sizing:border-box}main{max-width:1100px;margin:auto;padding:36px 20px 80px}
+.hero{background:linear-gradient(110deg,#122b47,#246992);border-radius:24px;padding:38px;color:white;margin-bottom:22px}
+.hero h1{font-size:clamp(28px,4vw,44px);line-height:1.15;margin:10px 0}.hero p{max-width:750px;color:#d6e9f4}
+.label{letter-spacing:2px;text-transform:uppercase;font-weight:bold;color:#83d9e6;font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:20px 0}
+.card,.section{background:white;border:1px solid #dce5ee;border-radius:16px;padding:22px}
+.metric{font-size:32px;font-weight:800;color:#17618a}.sub{color:#65788c;font-size:13px}
+.section{margin:18px 0}.section h2{margin:0 0 8px} .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+img{width:100%;height:auto;border-radius:9px} input,select,button{font:inherit;padding:11px 12px;border:1px solid #c7d7e3;border-radius:9px}
+input{max-width:100%;width:250px}button{background:#17618a;color:white;cursor:pointer;border:0}button:hover{background:#114b6d}
+.result{white-space:pre-wrap;background:#f3f8fa;border-radius:12px;padding:15px;min-height:85px;font-family:ui-monospace,monospace;font-size:13px}
+footer{color:#66798b;text-align:center;margin-top:24px}@media(max-width:680px){.two{grid-template-columns:1fr}}
+</style></head><body><main>
+<header class="hero"><div class="label">Лабораторна робота № 8 · NLP</div><h1>Векторні подання слів · CBOW</h1>
+<p>Власна реалізація Continuous Bag of Words з NumPy: навчання нейромережі, косинусна подібність, арифметика векторів і візуалізація PCA.</p></header>
+<div class="cards" id="metrics"></div>
+<section class="section"><h2>Інтерактивна перевірка векторів</h2><p class="sub">Введіть слово з корпусу, щоб знайти найближчі слова. Розрахунок здійснюється у вашому браузері з опублікованими навченими векторами.</p>
+<div><input id="query" value="king" aria-label="Слово"><button id="search">Знайти подібні</button></div><pre class="result" id="neighbors">Завантаження векторів…</pre>
+<h3>Векторна арифметика</h3><div><input id="expr" value="king - man + woman" style="width:360px" aria-label="Векторний вираз"><button id="calc">Обчислити</button></div><pre class="result" id="arithmetic"></pre></section>
+<div class="two"><section class="section"><h2>PCA-візуалізація</h2><img src="pca_embeddings.png" alt="PCA-розташування слів з CBOW"></section>
+<section class="section"><h2>Навчання нейромережі</h2><img src="training_loss.png" alt="Графік втрат під час навчання"></section></div>
+<section class="section"><h2>Методика і висновки</h2><p>Використано слова з корпусу Shakespeare (англійська мова); CBOW передбачає центральне слово за сусідніми. Вектори мають 50 вимірів. Модель навчена з ReLU, softmax і крос-ентропією; оптимізація — мінібатчний SGD.</p>
+<p>Результати на маленькому літературному корпусі не дорівнюють якості великих готових моделей: складні семантичні аналогії можуть бути неточними. Файли з кодом, CSV, вагами та повними результатами доступні в GitHub-репозиторії.</p></section>
+<footer>Лабораторна робота №8 · Word Embeddings · Continuous Bag of Words</footer>
+</main><script>
+const summary={"metrics": {"source_file": "shakespeare.txt", "total_input_sentences": 5888, "train_sentences": 5299, "test_sentences": 589, "tokens_in_selected_lines": 50314, "vocabulary_size": 1764, "train_examples": 24121, "test_examples": 2641, "embedding_dimension": 50, "context_each_side": 2, "training_steps": 500, "batch_size": 128, "learning_rate": 0.35, "min_frequency": 3, "seed": 42, "training_seconds": 1.195, "initial_minibatch_loss": 7.474629, "final_minibatch_loss": 5.60195, "heldout_loss": 5.45921, "heldout_top1_accuracy": 0.133, "heldout_examples_evaluated": 1000, "method": "CBOW, NumPy ручний backprop, ReLU, softmax, крос-ентропія, mini-batch SGD", "analysis_note": "Невеликий корпус та мала кількість кроків обмежують семантичну якість аналогій."}, "pca": [{"word": "king", "x": -0.11647842949013243, "y": -0.189529989608633}, {"word": "queen", "x": 0.36372376757365277, "y": -0.09916485856762963}, {"word": "lord", "x": -0.335208865656265, "y": -0.48362593384325536}, {"word": "man", "x": -0.020121508256756557, "y": -0.2008335541099622}, {"word": "woman", "x": -0.06834112657560001, "y": 0.05517236949855579}, {"word": "rich", "x": 0.1418221523301161, "y": 0.042945694611772445}, {"word": "happy", "x": 0.2701454114211563, "y": -0.07471021499054405}, {"word": "sad", "x": 0.10941855309402714, "y": 0.1318835868811754}, {"word": "love", "x": -0.4984186089489982, "y": 0.1388005956361115}, {"word": "war", "x": 0.08803647106367074, "y": 0.09035759295403853}, {"word": "prince", "x": 0.035255900781778926, "y": 0.3841839177307038}, {"word": "england", "x": 0.2854440321422, "y": -0.09032633843820942}, {"word": "france", "x": -0.2552777494788496, "y": 0.2948471322458762}]};let model=null, index={};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const m=summary.metrics;
+document.querySelector('#metrics').innerHTML=[['Словник',m.vocabulary_size.toLocaleString('uk-UA'),'слів'],['Розмірність',m.embedding_dimension,'компонент'],['SGD',m.training_steps,'кроків'],['Test loss',m.heldout_loss.toFixed(3),'на відкладених даних'],['Top-1', (m.heldout_top1_accuracy*100).toFixed(2)+'%','тестова вибірка']].map(([k,v,foot])=>`<div class="card"><div class="sub">${esc(k)}</div><div class="metric">${esc(v)}</div><div class="sub">${esc(foot)}</div></div>`).join('');
+function similarity(query,exclude){let n=Math.hypot(...query);if(!n)return[];let out=[];for(let i=0;i<model.words.length;i++){let w=model.words[i];if(exclude.has(w))continue;let s=0,v=model.vectors[i];for(let j=0;j<v.length;j++)s+=query[j]*v[j];let nv=Math.hypot(...v);out.push([w,nv ? s/(n*nv) : 0])}return out.sort((a,b)=>b[1]-a[1]).slice(0,8)}
+function simWord(){if(!model)return;let w=document.getElementById('query').value.trim().toLowerCase(),i=index[w];let r=document.getElementById('neighbors');if(i===undefined){r.textContent='Слова немає у словнику.';return;}r.textContent=similarity(model.vectors[i],new Set([w,'<unk>'])).map(([w,s],i)=>`${i+1}. ${w.padEnd(16,' ')} ${s.toFixed(4)}`).join('\n')}
+function calc(){if(!model)return;let expr=document.getElementById('expr').value.trim().toLowerCase(),terms=expr.match(/[+-]?\s*[a-z]+(?:'[a-z]+)?/g)||[],output=document.getElementById('arithmetic');let v=new Array(model.vectors[0].length).fill(0),ex=new Set(['<unk>']);if(!terms.length){output.textContent='Введіть вираз, наприклад king - man + woman';return;}
+for(let term of terms){let neg=term.trim().startsWith('-'),w=term.replace(/^[+-]/,'').trim(),ix=index[w];if(ix===undefined){output.textContent=`Невідоме слово: ${w}`;return;}let src=model.vectors[ix];ex.add(w);for(let j=0;j<v.length;j++)v[j]+=(neg?-1:1)*src[j]}output.textContent=similarity(v,ex).map(([w,s],i)=>`${i+1}. ${w.padEnd(16,' ')} ${s.toFixed(4)}`).join('\n')}
+document.querySelector('#search').addEventListener('click',simWord);document.querySelector('#calc').addEventListener('click',calc);
+fetch('./vectors.json').then(r=>{if(!r.ok)throw new Error('Файл моделі не знайдено');return r.json()}).then(x=>{model=x;x.words.forEach((w,i)=>index[w]=i);simWord();calc()}).catch(e=>{document.getElementById('neighbors').textContent='Помилка завантаження: '+e.message});
+</script></body></html>
